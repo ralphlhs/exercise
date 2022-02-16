@@ -13,11 +13,10 @@ class Dduck extends StatefulWidget {
 }
 
 class _DduckState extends State<Dduck> {
-  // String url = 'http://jsonplaceholder.typicode.com/todos';
-  String url = 'https://extrasmallsourextension.ralphlhs71.repl.co/json.html';
+  String url = 'https://extrasmallsourextension.ralphlhs71.repl.co/menu.json';
   List<Map<String, dynamic>>
-  // jfk = [];
-  jfk = [{ "_menu": '15,000원', "_col": '공기밥 무료', "_dodo": 0xffFFE959 }, { "_menu": '7,000원', "_col": '공기밥 천원', "_dodo": 0xffB2FF59 }, { "_menu": '3,500원', "_col": '김치 셀프', "_dodo": 0xffAD6BB3 }];
+  jfk = [];
+  // jfk = [{ "_menu": '15,000원', "_col": '공기밥 무료', "_dodo": 0xffFFE959 }, { "_menu": '7,000원', "_col": '공기밥 천원', "_dodo": 0xffB2FF59 }, { "_menu": '3,500원', "_col": '김치 셀프', "_dodo": 0xffAD6BB3 }];
   Map<String, dynamic> af = {};
 
   Future<List <Map<String, dynamic>>> KimHeaven() async {
@@ -25,9 +24,10 @@ class _DduckState extends State<Dduck> {
     await http.get(Uri.parse(url));
     var jjj = response.body;
     print(jjj);
-    List <Map<String, dynamic>> jj = jsonDecode(jjj)!;
+    List <Map<String, dynamic>> jj = jsonDecode(response.body)!;
+    print(jj);
     List <Map<String, dynamic>> jfk = Post.fromJson(jj).getList().toList();
-    return jfk;
+    return jj;
 
 
 
@@ -79,7 +79,7 @@ class _DduckState extends State<Dduck> {
   String _menu = '궁금해?';
   String _col = '추가?';
   int _dodo = 0xffffffff;
-
+  var myInt = int.parse('12345');
   void _squid() async {
     setState(() {
       Map<String, dynamic> json = jfk[0];
@@ -173,6 +173,7 @@ abstract class Pizza {
 
   int getColor();
 
+  //static fromJson() => factory Pizza.fromJson()
   factory Pizza.fromJson(Map<String, dynamic> json) {
     switch (json["_menu"] as String) {
       case '15,000원':

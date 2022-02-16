@@ -1,23 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:exercise/Pixabay/pixabay.dart';
 import 'package:exercise/snack_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'column_test.dart';
 import 'drawer_test.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
-  Spicy(a: '에이요~');
 
-  print(Spicy().aaa());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Builder(builder: (context) => Myexer('a', 'b'),),
+    return MaterialApp(
+
+      home: Builder(
+        builder: (context) => Myexer('a', 'b'),
+      ),
       title: '연습',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -31,18 +38,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Spicy {
-  String? a;
-  int b = 10;
+// StatelessWidget( key).build(BuildContext a);
+//
+// Widget abc(){
+//   return const Scaffold();
+// }
 
-  Spicy({String a = ''}) {
-    print('이거슨...$a');
-  }
 
-  String? aaa() {
-    return a;
-  }
-}
 
 class Myexer extends StatefulWidget {
   Myexer(this.a, this.b, {Key? key}) : super(key: key);
@@ -81,7 +83,33 @@ class _MyexerState extends State<Myexer> {
         ],
       ),
       drawer: _drawerTest,
-      body: ColumnTest(widget.a, widget.b),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(children: [
+          Center(
+            child: Builder(builder: (BuildContext cont) {
+              return ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(cont).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        '이게 스넥바라는 거야.',
+                        textAlign: TextAlign.center,
+                      ),
+                      backgroundColor: Colors.amber,
+                    ),
+                  );
+                },
+                child: const Text("눌러봐바. 뿅"),
+              );
+            },),
+          ),
+          const SizedBox(
+            height: 30.0,
+          ),
+          ColumnTest(widget.a, widget.b),
+        ]),
+      ),
     );
   }
 }

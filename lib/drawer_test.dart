@@ -1,8 +1,12 @@
 import 'package:exercise/Pixabay/pixabay.dart';
 import 'package:flutter/material.dart';
+import 'Dice/dice_game.dart';
+import 'FutureBuilder/future_test.dart';
+import 'login/login.dart';
 import 'Menu/dduck.dart';
 import 'Memo/memo_main.dart';
 import 'Subway/subway.dart';
+import 'login/newlogin.dart';
 
 class DrawerTest extends StatelessWidget {
   const DrawerTest({Key? key}) : super(key: key);
@@ -15,8 +19,8 @@ class DrawerTest extends StatelessWidget {
         children: <Widget>[
           UserAccountsDrawerHeader(
             currentAccountPicture: const CircleAvatar(
-              // backgroundImage:
-              //     AssetImage('https://c.tenor.com/Q0s3w8QqeSgAAAAd/icon.gif'),
+              backgroundImage:
+                  AssetImage('assets/subway.gif'),
               backgroundColor: Color(0xffcd8d8d),
             ),
             otherAccountsPictures: const [
@@ -29,6 +33,9 @@ class DrawerTest extends StatelessWidget {
             accountName: const Text('poohlee'),
             accountEmail: const Text('ralphlhs@empas.com'),
             onDetailsPressed: () {
+              Navigator.push( context,
+              MaterialPageRoute(builder: (context) => const Login()),
+              );
               print('arrow is clicked');
             },
             decoration: const BoxDecoration(
@@ -99,12 +106,45 @@ class DrawerTest extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => const Memo()));
+                  context, MaterialPageRoute(builder: (_) => TodoListPage(a: '콜라', b: 23, mack: Mac('매킨토시'),)));
             },
             trailing: const Icon(Icons.add),
-          )
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.view_in_ar,
+              color: Color(0xff5F5F5F),
+            ),
+            title: const Text('주사위 던지기',
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Color(0xff5F5F5F),
+                    fontWeight: FontWeight.bold)),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => const DiceGame() ));
+            },
+            trailing: const Icon(Icons.add),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.add_road,
+              color: Color(0xff5F5F5F),
+            ),
+            title: const Text('퓨쳐 핸썹',
+                style: TextStyle(
+                    fontSize: 17.0,
+                    color: Color(0xff5F5F5F),
+                    fontWeight: FontWeight.bold)),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => const Waiting() ));
+            },
+            trailing: const Icon(Icons.add),
+          ),
         ],
       ),
     );
   }
 }
+

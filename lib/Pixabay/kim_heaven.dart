@@ -6,7 +6,7 @@ class Post{
 
 
   Post.fromJson(this.jfk){
-    jfk = this.jfk as List<Map<String, dynamic>>;
+    jfk = this.jfk ;
   }
 
   Post(this._menu, this._col, this._dodo);

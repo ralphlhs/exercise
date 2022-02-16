@@ -16,22 +16,23 @@ class _SubWayState extends State<SubWay> {
   String subwayName = '모란';
   final _picControl = TextEditingController();
 
-  Future<MetroInfo> metroInfo() async {
+  Future<MetroInfo> metroInfo(String query) async {
     String _API_METRO =
-        'http://swopenAPI.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/0/5/$subwayName';
+        'http://swopenAPI.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/0/5/$query';
     final response = await http.get(Uri.parse(_API_METRO));
     // String metroinfofo = response.body;
     // print(metroinfofo);
     var decode = jsonDecode(response.body);
+    print(decode);
     MetroInfo metroinfofo = MetroInfo.fromJson(decode);
     return metroinfofo;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   init();
+  // }
 
   @override
   void dispose() {
@@ -39,12 +40,12 @@ class _SubWayState extends State<SubWay> {
     super.dispose();
   }
 
-  Future<void> init() async {
-    MetroInfo meme = await metroInfo();
-    setState(() {
-      _metroinfo = meme;
-    });
-  }
+  // Future<void> init() async {
+  //   MetroInfo meme = await metroInfo(subwayName);
+  //   setState(() {
+  //     _metroinfo = meme;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -53,66 +54,68 @@ class _SubWayState extends State<SubWay> {
         title: const Text('지하철 역정보'),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0.0, 10.0, 30.0, 15.0),
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: '사진검색',
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0.0, 10.0, 30.0, 15.0),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: '사진검색',
+                  ),
+                  controller: _picControl,
+                  // keyboardType: TextInputType.text,
                 ),
-                controller: _picControl,
-                keyboardType: TextInputType.text,
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final subwayName = await metroInfo(_picControl.text);
+
+                },
+                child: const Text('지하철정보'),
+              ),
+            ]),
+            SizedBox(
+              child: ListView.separated(
+                itemCount: _metroinfo != null
+                    ? _metroinfo!.realtimeArrivalList!.length
+                    : 0,
+                itemBuilder: (context, index) {
+                  final data = _metroinfo!.realtimeArrivalList![index];
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 300.0,
+                          height: 160.0,
+                          child: Text(
+                            data.updnLine!,
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(data.trainLineNm!),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 6.0);
+                },
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  subwayName = _picControl.text;
-                });
-              },
-              child: const Text('지하철정보'),
-            ),
-          ]),
-          SizedBox(
-            child: ListView.separated(
-              itemCount: _metroinfo != null
-                  ? _metroinfo!.realtimeArrivalList.length
-                  : 0,
-              itemBuilder: (context, index) {
-                final data = _metroinfo!.realtimeArrivalList[index];
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 300.0,
-                        height: 160.0,
-                        child: Text(
-                          data.updnLine,
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(data.trainLineNm),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(height: 6.0);
-              },
-            ),
-          ),
 
 
 
 
 
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -120,7 +123,7 @@ class _SubWayState extends State<SubWay> {
 
 class MetroInfo {
   // late Map<String, dynamic> errorMessage;
-  late List<RealtimeArrivalList> realtimeArrivalList;
+  List<RealtimeArrivalList>? realtimeArrivalList;
 
   MetroInfo(
       // this.errorMessage,
@@ -132,27 +135,31 @@ class MetroInfo {
     //
     realtimeArrivalList = [];
     jjj["realtimeArrivalList"].forEach((v) {
-      realtimeArrivalList.add(RealtimeArrivalList.fromJson(v));
+      realtimeArrivalList!.add(RealtimeArrivalList.fromJson(v));
     });
   }
 }
 
 class ErrorMessage {
-  late int status; //200
-  late String message; //정상 or 에러
+  final int? status; //200
+  final String? message;
 
-  ErrorMessage.fromJson(dynamic jj) {
-    status = jj["status"];
-    message = jj['message'];
+  ErrorMessage({this.status, this.message}); //정상 or 에러
+
+
+  factory ErrorMessage.fromJson(dynamic jj) {
+    return ErrorMessage(
+    status : jj['status'],
+    message : jj['message'],);
   }
 }
 
 class RealtimeArrivalList {
-  late String statnNm; //역이름
-  late String updnLine; //상행
-  late String trainLineNm; //방면
-  late String subwayHeading; //오른쪽, 왼쪽
-  late String arvlMsg2; //현재위치
+  String? statnNm; //역이름
+  String? updnLine; //상행
+  String? trainLineNm; //방면
+  String? subwayHeading; //오른쪽, 왼쪽
+  String? arvlMsg2; //현재위치
 
   RealtimeArrivalList.fromJson(dynamic jj) {
     statnNm = jj["statnNm"];
